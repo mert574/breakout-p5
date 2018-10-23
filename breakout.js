@@ -2,13 +2,13 @@
 
 let player, ball, bricks, score, scoreElem,
     wallTop, wallBottom, wallLeft, wallRight,
+    paused = true,
     MAX_SPEED = 10;
 
 function setup() {
     createCanvas(500, 600);
 
-    // init
-    player = createSprite(30, height-40, 100, 10);
+    player = createSprite(0, height-40, 100, 10);
     player.immovable = true;
     player.shapeColor = color(255, 255, 255);
 
@@ -19,7 +19,6 @@ function setup() {
     score = 0;
     scoreElem = document.getElementById('score');
 
-    // walls
     wallTop = createSprite(width/2, -15, width, 30);
     wallTop.immovable = true;
     wallBottom = createSprite(width/2, height+30/2, width, 30);
@@ -30,6 +29,15 @@ function setup() {
     wallRight.immovable = true;
     
     createBricks();
+    noLoop();
+}
+
+function mousePressed() {
+    if (paused) {
+        updateScore(-score);
+        loop();
+        paused = false;
+    }
 }
 
 function createBricks() {
@@ -38,8 +46,8 @@ function createBricks() {
     if (bricks) bricks.removeSprites();
     bricks = new Group();
 
-    for (let i=0;i<8;i++) {
-        for (let j=0;j<6;j++) {
+    for (let i=0; i<8; i++) {
+        for (let j=0; j<6; j++) {
             const sprite = createSprite((i * (OFFSET + 50)) + 50, (j * (OFFSET + 20) + 30), 50, 20);
             sprite.shapeColor = color(255, 255, 255);
             sprite.immovable = true;
@@ -51,19 +59,23 @@ function createBricks() {
 function draw() {
     background(0);
 
-    player.position.x = constrain(mouseX, player.width/2, width-player.width/2);
+    if (paused) {
+        player.position.x = width/2;
+        textSize(32);
+        fill(255, 255, 0);
+        text('Click to Start', width/2-100, height/2-32);
+    } else {
+        player.position.x = constrain(mouseX, player.width/2, width-player.width/2);
+    }
 
     ball.bounce(wallTop);
     ball.bounce(wallBottom, onBallHitBottom);
     ball.bounce(wallLeft);
     ball.bounce(wallRight);
-
     ball.bounce(bricks, onBallHitBrick);
 
-    let swing;
-
     if(ball.bounce(player)) {
-        swing = (ball.position.x-player.position.x)/3;
+        const swing = (ball.position.x-player.position.x)/3;
         ball.setSpeed(MAX_SPEED, ball.getDirection()+swing);
     }
 
@@ -76,13 +88,14 @@ function onBallHitBrick(ball, brick) {
 }
 
 function onBallHitBottom(ball, wall) {
-    player.position.x = 30
+    player.position.x = width/2;
     player.position.y = height-40;
     ball.position.x = width/2;
     ball.position.y = height/2;
+    paused = true;
 
+    noLoop();
     createBricks();
-    updateScore(-score);
 }
 
 function updateScore(toAdd) {
