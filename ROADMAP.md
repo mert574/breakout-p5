@@ -18,6 +18,7 @@
 
 ## Gameplay and presentation
 
+- Redesign the surrounding page, including layout, typography, colors, score display and control instructions, for desktop and mobile.
 - Add level layouts and difficulty progression.
 - Improve paddle bounce control and ball-speed tuning.
 - Add ball power-ups, including a strong ball that deals extra brick damage and multiball.
