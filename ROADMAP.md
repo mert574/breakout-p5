@@ -2,6 +2,7 @@
 
 ## M2D migration
 
+- Add a `package.json` to manage dependencies and provide development and build scripts.
 - Replace p5.js rendering and p5.play sprites with [M2D](https://github.com/mert574/m2d-engine) scenes and game objects.
 - Port paddle movement, ball collisions, brick removal and scoring.
 - Preserve the existing game as a reference while checking the migrated version.
